@@ -1,0 +1,29 @@
+Student:Hui-Jou Chou, 168009895
+12/01/2016
+
+programming assignment5
+
+you can only specify up to 7 input files.
+
+Keyboard functionality:
+Key n: show next object
+Key p: show previous object
+Key X/x,Y/y,Z/z: adjust light position in x, y, z direction, respectively.
+Key right/left arrow: rotate object around y axis by 2/-2 degrees
+Key up/down arrow: rotate object around x axis by 2/-2 degrees
+Key S/s: scale object
+Key I/i:zoom in/zoom out
+Key r: viewer rotate around y axis by -4 degrees
+Key l: viewer rotate around y axis by 4 degrees
+Key u: viewer rotate around x axis by -4 degrees
+Key d: viewer rotate around x axis by 4 degrees
+Key v: vertex mode
+key e: edge mode
+Key f: face mode
+Key M: switch between more non-reflective and metallic
+Key B/b: adjust diffuse surface reflection
+Key a: animation start/stop(spin round y axis) 
+Key 1: flat shading
+Key 2: gourand shading
+Key 3: Blinn-Phong shading
+Key ESC:the program quits
