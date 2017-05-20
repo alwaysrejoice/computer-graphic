@@ -150,6 +150,8 @@ GLint object_hitship(Crl *aliens,int pos){
 }
 void really_draw()
 {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     // Draw aliens
     for (int i = 0; i<num_aliens; i++)
     {
@@ -244,10 +246,6 @@ void really_draw()
     {
         if(LineSegments[i]->hit==0)
         {
-            if(animation){
-                LineSegments[i]->v1.y+=speed;
-                LineSegments[i]->v2.y+=speed;
-            }
             glColor3fv(drawingcolor[0]);
             glBegin(GL_LINES);
             glVertex2i(LineSegments[i]->v1.x, LineSegments[i]->v1.y);
@@ -258,7 +256,6 @@ void really_draw()
 }
 void draw(void)
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     now = glfwGetTime();
     
     if(counter==num_aliens && level==1){
@@ -293,6 +290,16 @@ void draw(void)
             }
     
         
+        }
+    }
+    for (int i=0; i<num_missile; i++)
+    {
+        if(LineSegments[i]->hit==0)
+        {
+            if(animation){
+                LineSegments[i]->v1.y+=speed;
+                LineSegments[i]->v2.y+=speed;
+            }
         }
     }
     
