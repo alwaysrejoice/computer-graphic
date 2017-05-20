@@ -2,8 +2,8 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#include <openGL/glu.h>
 #include <GLFW/glfw3.h>
+#include "Common.h"
 
 GLint winwidth=500, winheight=700;
 GLint scaledirection, rotatedirection, translatedirection_x,translatedirection_y;
@@ -27,30 +27,10 @@ int level=1;
 #define MAX_ALIENS 50
 #define MAX_NUM 2000
 enum {WHITE, RED, GREEN, BLUE};
-typedef struct
-{
-    float x, y;
-} Vertex;
 
-typedef struct{
-    Vertex v1;
-    Vertex v2;
-    float distance;
-    int color;
-} circle;
-typedef struct
-{
-    Vertex v1;
-    Vertex v2;
-    int color;
-    int hit;
-} line;
 
 int currentcolor = WHITE;
-GLfloat drawingcolor[][3] = {{1.0, 1.0, 1.0},
-    {1.0, 0.0, 0.0},
-    {0.0, 1.0, 0.0},
-    {0.0, 0.0, 1.0}};
+
 
 circle CrlSegments[MAX_ALIENS];
 line LineSegments[MAX_NUM];
@@ -80,15 +60,8 @@ circle make_circle(Vertex v1, Vertex v2){
 
 void myInit(void)
 {
-    glViewport(0,0,winwidth,winheight);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(0.0, winwidth, 0.0, winheight);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glClearColor(0.0,0.0,0.0,1.0);
-    glPointSize(10.0);
-    glLineWidth(4.0);
+    init_graphics();
+    resize_graphics(winwidth, winheight);
     last_time = glfwGetTime();
 }
 
@@ -137,112 +110,6 @@ GLint object_hitship(circle *aliens,int pos){
        y1<=aliens->v1.y+5 &&
        pos-25>=aliens->v1.x-5 && pos-25<=aliens->v1.x+5) return GL_TRUE;
     return GL_FALSE;
-}
-void really_draw()
-{
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // Draw aliens
-    for (int i = 0; i<num_aliens; i++)
-    {
-        if(CrlSegments[i].distance!=0)
-        {
-            glColor3fv(drawingcolor[CrlSegments[i].color]);
-            float theta = 2 * 3.1415926 / 300.0;
-            float tangetial_factor = tanf(theta);//calculate the tangential factor
-            
-            float radial_factor = cosf(theta);//calculate the radial factor
-            
-            float x = CrlSegments[i].distance;//we start at angle = 0
-            float cx = CrlSegments[i].v1.x;
-            float cy = CrlSegments[i].v1.y;
-            float y = 0;
-            glBegin(GL_POLYGON);
-            for(int ii = 0; ii < 300; ii++)
-            {
-                glVertex2f(x + cx, y + cy);//output vertex
-                
-                float tx = -y;
-                float ty = x;
-                
-                //add the tangential vector
-                
-                x += tx * tangetial_factor;
-                y += ty * tangetial_factor;
-                
-                //correct using the radial factor
-                
-                x *= radial_factor;
-                y *= radial_factor;
-            }
-            glEnd();
-        }
-    }
-    
-    // Draw Bombs
-    for (int i = 0; i<num_bombs; i++)
-    {
-        if(animation)
-        {
-            bombs[i].v1.y = bombs[i].v1.y +translatedirection_y;
-        }
-        
-        glColor3fv(drawingcolor[bombs[i].color]);
-        float theta = 2 * 3.1415926 / 300.0;
-        float tangetial_factor = tanf(theta);//calculate the tangential factor
-        
-        float radial_factor = cosf(theta);//calculate the radial factor
-        
-        float x = bombs[i].distance;//we start at angle = 0
-        float cx = bombs[i].v1.x;
-        float cy = bombs[i].v1.y-20;
-        float y = 0;
-        glBegin(GL_POLYGON);
-        for(int ii = 0; ii < 300; ii++)
-        {
-            glVertex2f(x + cx, y + cy);//output vertex
-            
-            float tx = -y;
-            float ty = x;
-            
-            //add the tangential vector
-            
-            x += tx * tangetial_factor;
-            y += ty * tangetial_factor;
-            
-            //correct using the radial factor
-            
-            x *= radial_factor;
-            y *= radial_factor;
-        }
-        glEnd();
-    }
-    
-    // Draw somethings??
-    glColor3fv(drawingcolor[1]);
-    glPushMatrix();
-    glTranslatef(currentpos, currenty, 0);
-    glRotatef(ang, 0, 0, 1);
-    glTranslatef(-currentpos, -currenty, 0);
-    glBegin(GL_POLYGON);
-    glVertex2i(currentpos, currenty);
-    glVertex2i(currentpos-25, currenty-40);
-    glVertex2i(currentpos+25, currenty-40);
-    glEnd();
-    glPopMatrix();
-    
-    // Draw missiles
-    for (int i=0; i<num_missile; i++)
-    {
-        if(LineSegments[i].hit==0)
-        {
-            glColor3fv(drawingcolor[0]);
-            glBegin(GL_LINES);
-            glVertex2i(LineSegments[i].v1.x, LineSegments[i].v1.y);
-            glVertex2i(LineSegments[i].v2.x, LineSegments[i].v2.y);
-            glEnd();
-        }
-    }
 }
 void draw(void)
 {
@@ -338,7 +205,10 @@ void draw(void)
     }
     for(int i=0; i<num_bombs;i++)
     {
-        if(CrlSegments[i].distance!=0){
+        if(animation)
+        {
+            bombs[i].v1.y = bombs[i].v1.y +translatedirection_y;
+        }
             
             if(object_hitship(&bombs[i],currentpos))
             {
@@ -346,8 +216,6 @@ void draw(void)
                	rotate=GL_TRUE;
                 
             }
-        }
-        
     
     }
 
@@ -355,7 +223,7 @@ void draw(void)
     if(pause_game==0){
         animation=GL_FALSE;
     }
-    really_draw();
+    draw_graphics(num_aliens, CrlSegments, num_bombs, bombs, num_missile, LineSegments, currentpos, currenty, ang);
 }
 
 void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
