@@ -27,20 +27,20 @@ int level=1;
 #define MAX_ALIENS 50
 #define MAX_NUM 2000
 enum {WHITE, RED, GREEN, BLUE};
-typedef struct vertex2d {
-    float x;
-    float y;
-} V2d;
+typedef struct
+{
+    float x, y;
+} Vertex;
 
 typedef struct circle {
-    V2d v1;
-    V2d v2;
+    Vertex v1;
+    Vertex v2;
     float distance;
     int color;
 } Crl;
 typedef struct line {
-    V2d v1;
-    V2d v2;
+    Vertex v1;
+    Vertex v2;
     int color;
     int hit;
 } Ln;
@@ -54,22 +54,13 @@ GLfloat drawingcolor[][3] = {{1.0, 1.0, 1.0},
 Crl *CrlSegments[MAX_ALIENS];
 Ln *LineSegments[MAX_NUM];
 Crl *bombs[MAX_NUM];
-V2d *firstvert = NULL, *secondvert = NULL;
+Vertex firstvert, secondvert;
 
-V2d *make_vertex(float x, float y) {
-    V2d *tmp;
-    
-    tmp = (V2d *) malloc(sizeof(V2d));
-    if (tmp == NULL) {
-        printf("Out of memory\n");
-        exit(0);
-    }
-    tmp->x = x;
-    tmp->y = y;
-    
-    return tmp;
+Vertex make_vertex(float x, float y)
+{
+    return (Vertex){x, y};
 }
-Ln *make_line(V2d v1, V2d v2) {
+Ln *make_line(Vertex v1, Vertex v2) {
     Ln *tmp;
     
     tmp = (Ln *) malloc(sizeof(Ln));
@@ -83,7 +74,7 @@ Ln *make_line(V2d v1, V2d v2) {
     return tmp;
 }
 
-Crl *make_circle(V2d v1, V2d v2){
+Crl *make_circle(Vertex v1, Vertex v2){
     Crl *tmp;
     tmp = (Crl *) malloc(sizeof(Crl));
     if (tmp == NULL) {
@@ -129,7 +120,7 @@ void aliens_init(int pos, int num_col, int num_row){
             
         	firstvert=make_vertex(x+2*j+space_x,y+2*i+space_y);
         	secondvert=make_vertex(x1+2*j+space_x,y+2*i+space_y);
-            CrlSegments[num_aliens]=make_circle(*firstvert,*secondvert);
+            CrlSegments[num_aliens]=make_circle(firstvert, secondvert);
             CrlSegments[num_aliens++]->color = currentcolor;
         }
     }
@@ -367,7 +358,7 @@ void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
                 {
                 	firstvert=make_vertex(currentpos,45);
                 	secondvert=make_vertex(currentpos,50);
-                    LineSegments[num_missile++]=make_line(*firstvert,*secondvert);
+                    LineSegments[num_missile++]=make_line(firstvert, secondvert);
                 }
                 break;
             case GLFW_KEY_D:
