@@ -32,18 +32,19 @@ typedef struct
     float x, y;
 } Vertex;
 
-typedef struct circle {
+typedef struct{
     Vertex v1;
     Vertex v2;
     float distance;
     int color;
-} Crl;
-typedef struct line {
+} circle;
+typedef struct
+{
     Vertex v1;
     Vertex v2;
     int color;
     int hit;
-} Ln;
+} line;
 
 int currentcolor = WHITE;
 GLfloat drawingcolor[][3] = {{1.0, 1.0, 1.0},
@@ -51,36 +52,25 @@ GLfloat drawingcolor[][3] = {{1.0, 1.0, 1.0},
     {0.0, 1.0, 0.0},
     {0.0, 0.0, 1.0}};
 
-Crl *CrlSegments[MAX_ALIENS];
-Ln *LineSegments[MAX_NUM];
-Crl *bombs[MAX_NUM];
+circle CrlSegments[MAX_ALIENS];
+line LineSegments[MAX_NUM];
+circle bombs[MAX_NUM];
 Vertex firstvert, secondvert;
 
 Vertex make_vertex(float x, float y)
 {
     return (Vertex){x, y};
 }
-Ln *make_line(Vertex v1, Vertex v2) {
-    Ln *tmp;
-    
-    tmp = (Ln *) malloc(sizeof(Ln));
-    if (tmp == NULL) {
-        printf("Out of memory\n");
-        exit(0);
-    }
+line make_line(Vertex v1, Vertex v2) {
+    Ln tmp;
     tmp->v1 = v1;
     tmp->v2 = v2;
     tmp->hit = 0;
     return tmp;
 }
 
-Crl *make_circle(Vertex v1, Vertex v2){
-    Crl *tmp;
-    tmp = (Crl *) malloc(sizeof(Crl));
-    if (tmp == NULL) {
-        printf("Out of memory\n");
-        exit(0);
-    }
+circle make_circle(Vertex v1, Vertex v2){
+    Crl tmp;
     tmp->v1 = v1;
     tmp->v2 = v2;
     tmp->distance = sqrt((float)(v1.x-v2.x)*(v1.x-v2.x)+(v1.y-v2.y)*(v1.y-v2.y));
