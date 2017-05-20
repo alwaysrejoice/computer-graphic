@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
-#include <GL/glew.h>
 #include <string.h>
 #include <openGL/glu.h>
 #include <GLFW/glfw3.h>
@@ -10,8 +9,8 @@ GLint winwidth=500, winheight=700;
 GLint scaledirection, rotatedirection, translatedirection_x,translatedirection_y;
 GLint animation=GL_TRUE;
 GLint rotate=GL_FALSE;
-to_right=GL_FALSE;
-to_left=GL_FALSE;
+GLint to_right=GL_FALSE;
+GLint to_left=GL_FALSE;
 GLdouble ang = 0.0;
 GLdouble now, last_time;
 int num_bombs=0;
@@ -23,7 +22,7 @@ int speed=3;
 int counter=0;
 int step=0;
 int down=0;
-int pause=1;
+int pause_game=1;
 int level=1;
 #define MAX_ALIENS 50
 #define MAX_NUM 2000
@@ -348,7 +347,7 @@ void draw(void)
     }
 
 	last_time = now;
-    if(pause==0){
+    if(pause_game==0){
         animation=GL_FALSE;
     }
 }
@@ -358,13 +357,13 @@ void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
     if (action == GLFW_PRESS){
         switch (key) {
             case GLFW_KEY_RIGHT:
-                if(pause) to_right=GL_TRUE;
+                if(pause_game) to_right=GL_TRUE;
                 break;
             case GLFW_KEY_LEFT:
-                if(pause) to_left=GL_TRUE;
+                if(pause_game) to_left=GL_TRUE;
                 break;
             case GLFW_KEY_SPACE:
-                if(pause)
+                if(pause_game)
                 {
                 	firstvert=make_vertex(currentpos,45);
                 	secondvert=make_vertex(currentpos,50);
@@ -373,7 +372,7 @@ void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
                 break;
             case GLFW_KEY_D:
                 animation=!animation;
-                pause=0;
+                pause_game=0;
                 if(animation==GL_TRUE){
                 for (int i =0; i<num_aliens; i++){
                     if(CrlSegments[i]->distance!=0){
@@ -395,7 +394,7 @@ void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
                 break;
             case GLFW_KEY_R:
                 animation=GL_TRUE;
-                pause=1;
+                pause_game=1;
                 break;
             case GLFW_KEY_Q:
             case GLFW_KEY_ESCAPE:
